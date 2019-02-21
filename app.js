@@ -32,11 +32,17 @@ function getFilePathes(targetDir) {
     let filePathes = [];
     return new Promise(function(resolve, reject) {
         fs.readdir(targetDir, (err, files) => {
-            files.forEach(file => {
-                filePathes.push(__dirname + '/tmp/' + file);
-            });
-            resolve(filePathes);
+            if (err) {
+                reject(err);
+            } else {
+                files.forEach(file => {
+                    filePathes.push(__dirname + '/tmp/' + file);
+                });
+                resolve(filePathes);                
+            }
         });
+    }).catch(err => {
+        console.log('Get error: ', err);
     });
 };
 
@@ -56,7 +62,14 @@ function parseFile(filePath) {
         }
     })
     .on('done', (err) => {
-        file.write(']');
+        if (err) {
+            console.log(err)
+        } else {
+            file.write(']');            
+        }
+    })
+    .on('error',(err)=>{
+        console.log(err)
     })
 }
 
